@@ -9,14 +9,14 @@ async function main() {
   const server = createServer();
   const transport = new StdioServerTransport();
   
-  process.stderr.write("[mcp-medicamentos-colombia] Iniciando servidor...\n");
+  process.stderr.write("[medtrack-colombia] Iniciando servidor...\n");
 
   await server.connect(transport);
 
-  process.stderr.write("[mcp-medicamentos-colombia] Servidor listo. Esperando conexiones MCP.\n");
+  process.stderr.write("[medtrack-colombia] Servidor listo. Esperando conexiones MCP.\n");
 }
 
 main().catch((err) => {
-  process.stderr.write(`[mcp-medicamentos-colombia] Error fatal: ${err.message}\n`);
+  process.stderr.write(`[medtrack-colombia] Error fatal: ${err.message}\n`);
   process.exit(1);
 });

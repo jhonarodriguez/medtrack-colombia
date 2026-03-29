@@ -6,6 +6,25 @@ Servidor MCP (Model Context Protocol) para buscar medicamentos en farmacias colo
 
 ---
 
+## Instalación rápida
+
+No necesitas clonar nada. Agrega esto a tu configuración de Claude Desktop:
+
+```json
+{
+  "mcpServers": {
+    "medtrack-colombia": {
+      "command": "npx",
+      "args": ["-y", "medtrack-colombia"]
+    }
+  }
+}
+```
+
+Eso es todo. La primera vez descarga e instala automáticamente.
+
+---
+
 ## Herramientas disponibles
 
 ### `buscar_medicamento`
@@ -76,21 +95,20 @@ farmacia: "farmatodo" | "cruz-verde" | "la-rebaja" | "locatel" | "colsubsidio"
 
 ### Requisitos
 - Node.js 20+
-- npm 9+
 
-### Opción A — Desde repositorio (desarrollo)
+### Desde npm
+
+```bash
+npm install -g medtrack-colombia
+```
+
+### Desde repositorio (desarrollo)
 
 ```bash
 git clone https://github.com/TU_USUARIO/medtrack-colombia.git
 cd medtrack-colombia
 npm install
 npm run build
-```
-
-### Opción B — Desde npm (cuando esté publicado)
-
-```bash
-npm install -g medtrack-colombia
 ```
 
 ---
