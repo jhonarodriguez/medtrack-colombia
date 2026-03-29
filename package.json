@@ -1,11 +1,11 @@
 {
-  "name": "mcp-medicamentos-colombia",
+  "name": "medtrack-colombia",
   "version": "0.1.0",
   "description": "MCP server para buscar medicamentos en farmacias colombianas, comparar precios y encontrar disponibilidad cercana",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "mcp-medicamentos-colombia": "dist/index.js"
+    "medtrack-colombia": "dist/index.js"
   },
   "scripts": {
     "build": "tsc",

@@ -18,7 +18,7 @@ import { formatearDisponibilidadFarmacia } from "./use-cases/format-disponibilid
 
 export function createServer(): McpServer {
   const server = new McpServer({
-    name: "mcp-medicamentos-colombia",
+    name: "medtrack-colombia",
     version: "0.1.0",
   });
 

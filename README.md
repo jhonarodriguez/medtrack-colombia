@@ -1,4 +1,4 @@
-# MCP Medicamentos Colombia
+# MedTrack Colombia
 
 Servidor MCP (Model Context Protocol) para buscar medicamentos en farmacias colombianas en tiempo real. Permite a cualquier LLM compatible con MCP consultar precios, comparar farmacias y encontrar disponibilidad cercana a tu ubicación.
 
@@ -81,8 +81,8 @@ farmacia: "farmatodo" | "cruz-verde" | "la-rebaja" | "locatel" | "colsubsidio"
 ### Opción A — Desde repositorio (desarrollo)
 
 ```bash
-git clone https://github.com/TU_USUARIO/mcp-medicamentos-colombia.git
-cd mcp-medicamentos-colombia
+git clone https://github.com/TU_USUARIO/medtrack-colombia.git
+cd medtrack-colombia
 npm install
 npm run build
 ```
@@ -90,7 +90,7 @@ npm run build
 ### Opción B — Desde npm (cuando esté publicado)
 
 ```bash
-npm install -g mcp-medicamentos-colombia
+npm install -g medtrack-colombia
 ```
 
 ---
@@ -146,7 +146,7 @@ Edita el archivo de configuración de Claude Desktop:
   "mcpServers": {
     "medicamentos-colombia": {
       "command": "node",
-      "args": ["C:/ruta/absoluta/mcp-medicamentos-colombia/dist/index.js"],
+      "args": ["C:/ruta/absoluta/medtrack-colombia/dist/index.js"],
       "env": {
         "GOOGLE_MAPS_API_KEY": "tu_key_aqui"
       }
@@ -161,7 +161,7 @@ Edita el archivo de configuración de Claude Desktop:
 {
   "mcpServers": {
     "medicamentos-colombia": {
-      "command": "mcp-medicamentos-colombia"
+      "command": "medtrack-colombia"
     }
   }
 }
@@ -180,7 +180,7 @@ En **Cursor → Settings → MCP**, agrega:
   "mcpServers": {
     "medicamentos-colombia": {
       "command": "node",
-      "args": ["C:/ruta/absoluta/mcp-medicamentos-colombia/dist/index.js"]
+      "args": ["C:/ruta/absoluta/medtrack-colombia/dist/index.js"]
     }
   }
 }
@@ -193,7 +193,7 @@ En **Cursor → Settings → MCP**, agrega:
 Cualquier cliente compatible con MCP (Claude Code CLI, Continue, Cline, etc.) puede conectarse usando el transporte stdio estándar:
 
 ```bash
-node /ruta/a/mcp-medicamentos-colombia/dist/index.js
+node /ruta/a/medtrack-colombia/dist/index.js
 ```
 
 ---
