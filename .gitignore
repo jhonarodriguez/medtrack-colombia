@@ -1,6 +1,7 @@
 node_modules/
 dist/
 .env
+scripts/
 *.log
 .DS_Store
 Thumbs.db
