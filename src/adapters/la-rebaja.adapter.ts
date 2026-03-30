@@ -1,14 +1,7 @@
-import { VtexGraphqlBaseAdapter } from "./vtex-graphql-base.adapter.js";
+import { VtexGraphqlBaseAdapter, type GraphQLVtexProduct } from "./vtex-graphql-base.adapter.js";
 import type { PharmacyLocation } from "../types/index.js";
 import { SEDES_LA_REBAJA_BOGOTA } from "./sedes/la-rebaja-bogota.js";
 
-/**
- * La Rebaja - Adaptador VTEX GraphQL persisted query
- *
- * Reutiliza VtexGraphqlBaseAdapter para evitar duplicar la lógica
- * de construcción de variables/extensiones y mapeo de productos.
- * - Sedes: se importan de archivo
- */
 export class LaRebajaAdapter extends VtexGraphqlBaseAdapter {
   readonly id = "la-rebaja";
   readonly nombre = "La Rebaja";
@@ -31,9 +24,54 @@ export class LaRebajaAdapter extends VtexGraphqlBaseAdapter {
     };
   }
 
-  protected getPersistedQueryConfig(): { sha256Hash: string } {
+  protected getPersistedQueryConfig(): { sha256Hash: string; operationName: string } {
     return {
-      sha256Hash: "069177eb2c038ccb948b55ca406e13189adcb5addcb00c25a8400450d20e0108",
+      sha256Hash: "3eca26a431d4646a8bbce2644b78d3ca734bf8b4ba46afe4269621b64b0fb67d",
+      operationName: "productSuggestions",
     };
+  }
+
+  protected override extractProducts(data: Record<string, unknown>): GraphQLVtexProduct[] {
+    const suggestions = data?.productSuggestions as { products?: GraphQLVtexProduct[] } | undefined;
+    return suggestions?.products ?? [];
+  }
+
+  protected override buildSearchVariables(medicamento: string): Record<string, unknown> {
+    return {
+      productOriginVtex: true,
+      simulationBehavior: "default",
+      hideUnavailableItems: false,
+      advertisementOptions: {
+        showSponsored: true,
+        sponsoredCount: 2,
+        repeatSponsoredProducts: false,
+        advertisementPlacement: "autocomplete",
+      },
+      fullText: medicamento,
+      count: 10,
+      shippingOptions: [],
+      variant: "null-null",
+      origin: "autocomplete",
+    };
+  }
+
+  protected override buildPresentacion(producto: GraphQLVtexProduct): string {
+    return (
+      producto.specificationGroups
+        ?.find((g) => g.name === "Pum")
+        ?.specifications?.find((s) => s.name === "Presentacionunidadmedida")
+        ?.values?.[0] ?? producto.productName
+    );
+  }
+
+  protected override buildNombre(producto: GraphQLVtexProduct, _presentacion: string): string {
+    return producto.productName;
+  }
+
+  protected override buildProductUrl(link: string): string {
+    if (!link) return "";
+    const match = link.match(/\/([^/]+\/p)$/);
+    if (match) return `${this.baseUrl}/${match[1]}`;
+    return link;
   }
 }

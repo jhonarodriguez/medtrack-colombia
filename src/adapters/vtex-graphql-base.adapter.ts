@@ -23,17 +23,10 @@ export interface GraphQLVtexProduct {
   productName: string;
   brand?: string;
   link?: string;
+  linkText?: string;
   categories?: string[];
   priceRange?: GraphQLPriceRange;
   specificationGroups?: GraphQLSpecGroup[];
-}
-
-interface GraphQLSearchResponse<TProduct extends GraphQLVtexProduct> {
-  data?: {
-    productSearch?: {
-      products?: TProduct[];
-    };
-  };
 }
 
 interface PersistedQueryConfig {
@@ -43,9 +36,6 @@ interface PersistedQueryConfig {
   provider?: string;
 }
 
-/**
- * Base reusable para farmacias VTEX que usan GraphQL + persisted query.
- */
 export abstract class VtexGraphqlBaseAdapter extends VtexBaseAdapter {
   protected abstract getPersistedQueryConfig(): PersistedQueryConfig;
 
@@ -68,6 +58,11 @@ export abstract class VtexGraphqlBaseAdapter extends VtexBaseAdapter {
       withFacets: false,
       variant: "null-null",
     };
+  }
+
+  protected extractProducts(data: Record<string, unknown>): GraphQLVtexProduct[] {
+    const search = data?.productSearch as { products?: GraphQLVtexProduct[] } | undefined;
+    return search?.products ?? [];
   }
 
   protected buildPresentacion(producto: GraphQLVtexProduct): string {
@@ -124,10 +119,10 @@ export abstract class VtexGraphqlBaseAdapter extends VtexBaseAdapter {
 
     let productos: GraphQLVtexProduct[];
     try {
-      const resp = await fetchJson<GraphQLSearchResponse<GraphQLVtexProduct>>(
+      const resp = await fetchJson<{ data?: Record<string, unknown> }>(
         this.buildGraphqlEndpoint(params)
       );
-      productos = resp?.data?.productSearch?.products ?? [];
+      productos = this.extractProducts(resp?.data ?? {});
     } catch (err) {
       this.logError("Fallo al consultar GraphQL VTEX", err);
       return [];
