@@ -4,6 +4,7 @@ import { FarmatodoAdapter } from "../adapters/farmatodo.adapter.js";
 import { CruzVerdeAdapter } from "../adapters/cruz-verde.adapter.js";
 import { LocatelAdapter } from "../adapters/locatel.adapter.js";
 import { ColsubsidioAdapter } from "../adapters/colsubsidio.adapter.js";
+import { CafamAdapter } from "../adapters/cafam.adapter.js";
 import { CacheAdapterDecorator, type CacheTTLConfig } from "../adapters/decorators/cache-adapter-decorator.js";
 import { RateLimitedAdapterDecorator } from "../adapters/decorators/rate-limited-adapter-decorator.js";
 import { LoggingAdapterDecorator } from "../adapters/decorators/logging-adapter-decorator.js";
@@ -39,6 +40,7 @@ export function createDefaultAdapters(): PharmacyAdapter[] {
     wrapWithDecorators(new CruzVerdeAdapter()),
     wrapWithDecorators(new LocatelAdapter()),
     wrapWithDecorators(new ColsubsidioAdapter()),
+    wrapWithDecorators(new CafamAdapter()),
     // Drogas La Economia: pendiente de implementacion
   ];
 }
