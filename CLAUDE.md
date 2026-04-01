@@ -31,7 +31,7 @@ MCP Client (Claude Desktop / Cursor)
     → tools/ (Zod validation + orchestration)
       → orchestrator/pharmacy-orchestrator.ts (parallel search + ranking)
         → adapter-registry.ts (wraps each adapter in Cache→RateLimit→Logging)
-          → adapters/ (5 pharmacy scrapers)
+          → adapters/ (6 pharmacy adapters)
             → scrapers/cheerio-scraper.ts or playwright-scraper.ts
 ```
 
@@ -47,11 +47,23 @@ MCP Client (Claude Desktop / Cursor)
 
 ### Pharmacy Adapters (`src/adapters/`)
 
-Each implements `PharmacyAdapter` interface:
+Each implements `PharmacyAdapter` via the following inheritance chain:
 
-- **FarmatodoAdapter** — Algolia search API (credentials in `.env`)
-- **CruzVerdeAdapter** — REST API with cookie-based session auth
-- **LaRebajaAdapter**, **LocatelAdapter**, **ColsubsidioAdapter** — extend `VtexBaseAdapter` (Template Method pattern; same VTEX commerce API, different base URLs)
+```
+BaseAdapter (abstract)
+├── VtexBaseAdapter (VTEX REST catalog_system API)
+│   ├── VtexGraphqlBaseAdapter (VTEX persisted GraphQL queries)
+│   │   ├── LaRebajaAdapter
+│   │   └── LocatelAdapter
+│   └── ColsubsidioAdapter
+├── FarmatodoAdapter  — Algolia via custom proxy api-search.farmatodo.com
+├── CruzVerdeAdapter  — REST API with cookie-based session auth
+└── CafamAdapter      — PrestaShop native JSON search API
+```
+
+**`VtexBaseAdapter`** — Template Method: subclasses implement `getCategoryFilter()` and `getSedesPerCity()`. Hits the VTEX REST catalog_system search endpoint.
+
+**`VtexGraphqlBaseAdapter`** — extends `VtexBaseAdapter`. Uses VTEX persisted GraphQL queries (`/_v/segment/graphql/v1`). Subclasses override `getPersistedQueryConfig()` (sha256Hash + operationName) and optionally `buildSearchVariables()` / `buildNombre()`. Products come from `data.productSearch.products`.
 
 ### Decorator Pipeline (`src/adapters/decorators/`)
 
@@ -75,8 +87,8 @@ All three decorators implement `PharmacyAdapter`, so they're interchangeable.
 ## Environment Variables
 
 Copy `.env.example` to `.env`. Required for production:
-- `ALGOLIA_APP_ID` / `ALGOLIA_API_KEY` — Farmatodo search (read-only keys, already in `.env.example`)
-- `GOOGLE_MAPS_API_KEY` — Optional; omit to use free Nominatim geocoding
+- `ALGOLIA_APP_ID` / `ALGOLIA_API_KEY` / `ALGOLIA_INDEX` — Farmatodo search (read-only keys and index name already in `.env.example`). Note: the adapter uses a custom proxy endpoint (`api-search.farmatodo.com`), not the standard Algolia DSN.
+- `GOOGLE_MAPS_API_KEY` — Optional; omit to use free Nominatim geocoding.
 
 Key optional tuning vars: `PLAYWRIGHT_TIMEOUT`, `HTTP_TIMEOUT`, `MAX_CONCURRENT_PER_PHARMACY`, `REQUEST_DELAY_MS`, `CACHE_PRICES_TTL`, `LOG_LEVEL`, `TRANSPORT` (stdio|http), `PORT`.
 
@@ -95,7 +107,10 @@ Notable test files:
 
 ## Adding a New Pharmacy
 
-1. Create `src/adapters/<chain>-adapter.ts` implementing `PharmacyAdapter` (or extend `VtexBaseAdapter` if VTEX-based)
+1. Create `src/adapters/<chain>-adapter.ts`:
+   - If VTEX GraphQL: extend `VtexGraphqlBaseAdapter`, implement `getPersistedQueryConfig()` with the store's sha256Hash
+   - If VTEX REST: extend `VtexBaseAdapter`, implement `getCategoryFilter()` and `getSedesPerCity()`
+   - Otherwise: extend `BaseAdapter` directly
 2. Add hardcoded `sedes` (branch locations) in `src/adapters/sedes/<chain>-sedes.ts`
 3. Register in `src/orchestrator/adapter-registry.ts` inside `createDefaultAdapters()`
-4. Add to `src/config/` if new API credentials are needed
+4. Add to `src/config/env.ts` if new API credentials are needed

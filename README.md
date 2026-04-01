@@ -2,7 +2,7 @@
 
 Servidor MCP (Model Context Protocol) para buscar medicamentos en farmacias colombianas en tiempo real. Permite a cualquier LLM compatible con MCP consultar precios, comparar farmacias y encontrar disponibilidad cercana a tu ubicación.
 
-**Farmacias soportadas:** Farmatodo · Cruz Verde · La Rebaja · Locatel · Colsubsidio
+**Farmacias soportadas:** Farmatodo · Cruz Verde · La Rebaja · Locatel · Colsubsidio · Droguerías Cafam
 
 ---
 
@@ -79,7 +79,7 @@ Disponibilidad y precio de un medicamento en una cadena específica.
 
 ```
 medicamento: "loratadina"
-farmacia: "farmatodo" | "cruz-verde" | "la-rebaja" | "locatel" | "colsubsidio"
+farmacia: "farmatodo" | "cruz-verde" | "la-rebaja" | "locatel" | "colsubsidio" | "cafam"
 ```
 
 ### Parámetro `formato`
@@ -267,11 +267,13 @@ src/
 │   ├── pharmacy-orchestrator.ts  # Búsqueda paralela + ranking
 │   └── adapter-registry.ts       # Pipeline Cache→RateLimit→Logging
 ├── adapters/
-│   ├── farmatodo.adapter.ts      # Algolia API
-│   ├── cruz-verde.adapter.ts     # REST API
-│   ├── colsubsidio.adapter.ts    # VTEX GraphQL
-│   ├── la-rebaja.adapter.ts      # VTEX GraphQL
-│   ├── locatel.adapter.ts        # VTEX REST
+│   ├── farmatodo.adapter.ts      # Algolia (proxy api-search.farmatodo.com)
+│   ├── cruz-verde.adapter.ts     # REST API con sesión cookie
+│   ├── cafam.adapter.ts          # PrestaShop JSON API
+│   ├── colsubsidio.adapter.ts    # VTEX REST
+│   ├── la-rebaja.adapter.ts      # VTEX GraphQL (persisted queries)
+│   ├── locatel.adapter.ts        # VTEX GraphQL (persisted queries)
+│   ├── vtex-graphql-base.adapter.ts  # Base para adaptadores VTEX GraphQL
 │   └── sedes/                    # Coordenadas de sucursales en Bogotá
 ├── services/
 │   ├── geo.service.ts            # Geocodificación + distancia Haversine
