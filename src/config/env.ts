@@ -9,7 +9,7 @@
 export const env = {
   ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID || "VCOJEYD2PO",
   ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY || "eb9544fe7bfe7ec4c1aa5e5bf7740feb",
-  ALGOLIA_INDEX: process.env.ALGOLIA_INDEX || "products",
+  ALGOLIA_INDEX: process.env.ALGOLIA_INDEX || "products-colombia",
   
   LOG_LEVEL: process.env.LOG_LEVEL || "info",
   
