@@ -161,7 +161,7 @@ export const DisponibilidadFarmaciaSchema = z.object({
     .describe("Nombre del medicamento a verificar"),
 
   farmacia: z
-    .enum(["farmatodo", "cruz-verde", "la-rebaja", "locatel", "colsubsidio", "economia"])
+    .enum(["farmatodo", "cruz-verde", "la-rebaja", "locatel", "colsubsidio", "cafam", "economia"])
     .describe("Farmacia específica donde verificar disponibilidad"),
 });
 
